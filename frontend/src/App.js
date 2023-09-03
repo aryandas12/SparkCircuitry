@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import CircuitCanvas from "./components/CircuitCanvas";
 
 const Container = styled.div`
   height: 100vh;
@@ -6,8 +7,8 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), 
-              url("https://images.unsplash.com/photo-1603732551681-2e91159b9dc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80") center;
+  /* background: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), 
+              url("https://images.unsplash.com/photo-1603732551681-2e91159b9dc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80") center; */
   background-size: cover;
               
 
@@ -18,10 +19,12 @@ const Title = styled.h1`
   font-family: 'Roboto', sans-serif;
 `
 
+
 function App() {
   return (
     <Container>
-      <Title>SPARKCIRCUITRY</Title>
+      {/* <Title>SPARKCIRCUITRY</Title> */}
+      <CircuitCanvas/>
     </Container>
   );
 }
