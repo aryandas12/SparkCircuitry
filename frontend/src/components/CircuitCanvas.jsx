@@ -4,6 +4,9 @@ import * as d3 from "d3";
 
 const Circle = styled.circle`
   transition: all 100ms;
+  &:hover{
+    cursor: pointer;
+  }
 `;
 
 const CircuitCanvas = () => {
@@ -67,34 +70,29 @@ const CircuitCanvas = () => {
       .on("click", () => setSelectedLine(lineId));
        // Add click event handler to remove the line
     }
-    else if(selectedComponent === 'resistance')
+    else if(selectedComponent === 'resistor')
     {
       svg.append("path")
       .attr("id", lineId)
-                    
-                    .attr("d", "M " + x1 +" "+y1 + "l"+ Math.sign((x2-x1)?(x2-x1):(y2-y1))*40+ " 0 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*2.5 +"-5 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" 10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" -10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" 10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5 +" -10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" 10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*2.5+ " -5 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*40+ " 0")
-                    .attr("stroke", "black")
-                    .attr("stroke-width", "3")
-                    .attr("stroke-linejoin", "bevel")
-                    .attr("fill", "none")
-                    .attr("transform", "rotate("+(y2==y1?0:Math.sign(y2<y1?y1-y2:y2-y1))*90+" "+x1+" "+y1+")")
-      
+      .attr("d", "M " + x1 +" "+y1 + "l"+ Math.sign((x2-x1)?(x2-x1):(y2-y1))*40+ " 0 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*2.5 +"-5 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" 10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" -10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" 10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5 +" -10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" 10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*2.5+ " -5 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*40+ " 0")
+      .attr("stroke", "black")
+      .attr("stroke-width", "3")
+      .attr("stroke-linejoin", "bevel")
+      .attr("fill", "none")
+      .attr("transform", "rotate("+(y2===y1?0:Math.sign(y2<y1?y1-y2:y2-y1))*90+" "+x1+" "+y1+")")
       .on("click", () => setSelectedLine(lineId));
     }
-    else if(selectedComponent === 'capacitance')
+    else if(selectedComponent === 'capacitor')
     {
       svg.append("path")
-      .attr("id", lineId)
-                    
-                    .attr("d", "M " + x1 +" "+y1 + "l"+ Math.sign((x2-x1)?(x2-x1):(y2-y1))*50+ " 0 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*0 +"-10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*0+" 20 m "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*10 +"-10 l 0 -10 l 0 20 l 0 -10 l"+Math.sign((x2-x1)?(x2-x1):(y2-y1))*50+ " 0")
-                    .attr("stroke", "black")
-                    .attr("stroke-width", "3")
-                    .attr("stroke-linejoin", "bevel")
-                    .attr("fill", "none")
-                    .attr("transform", "rotate("+(y2==y1?0:Math.sign(y2<y1?y1-y2:y2-y1))*90+" "+x1+" "+y1+")")
-      
-  
-    .on("click", () => setSelectedLine(lineId));
+      .attr("id", lineId)                 
+      .attr("d", "M " + x1 +" "+y1 + "l"+ Math.sign((x2-x1)?(x2-x1):(y2-y1))*50+ " 0 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*0 +"-10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*0+" 20 m "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*10 +"-10 l 0 -10 l 0 20 l 0 -10 l"+Math.sign((x2-x1)?(x2-x1):(y2-y1))*50+ " 0")
+      .attr("stroke", "black")
+      .attr("stroke-width", "3")
+      .attr("stroke-linejoin", "bevel")
+      .attr("fill", "none")
+      .attr("transform", "rotate("+(y2===y1?0:Math.sign(y2<y1?y1-y2:y2-y1))*90+" "+x1+" "+y1+")")
+      .on("click", () => setSelectedLine(lineId));
   }
 
   
@@ -154,10 +152,15 @@ const CircuitCanvas = () => {
       </button>
       </div>
       <div>
-        <button onClick={() =>setSelectedComponent('wire')}>Select Wire</button>
-        <button onClick={() => setSelectedComponent('resistance')}>Select Resistor</button>
-        <button onClick={() => setSelectedComponent('capacitance')}>Select Capacitor</button>
-        <button onClick={() => setSelectedComponent('inductance')}>Select Inductor</button>
+      <select
+          value={selectedComponent}
+          onChange={(e) => setSelectedComponent(e.target.value)}
+        >
+          <option value="wire">Wire</option>
+          <option value="resistor">Resistor</option>
+          <option value="capacitor">Capacitor</option>
+          <option value="inductor">Inductor</option>
+      </select>
       </div>
     </div>
   );
