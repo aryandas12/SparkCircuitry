@@ -64,20 +64,37 @@ const CircuitCanvas = () => {
       .attr("y2", y2)
       .attr("stroke", "grey")
       .attr("stroke-width", "3")
-      .on("click", () => setSelectedLine(lineId)); // Add click event handler to remove the line
+      .on("click", () => setSelectedLine(lineId));
+       // Add click event handler to remove the line
     }
     else if(selectedComponent === 'resistance')
     {
-      svg
-      .append('rect')
+      svg.append("path")
       .attr("id", lineId)
-      .attr("x", x1 + dotRadius)
-      .attr("y", y1 + dotRadius)
-      .attr("width", gap)
-      .attr("height", 10)
-      .attr("fill", "grey")
+                    
+                    .attr("d", "M " + x1 +" "+y1 + "l"+ Math.sign(x2-x1)*40+ " 0 l "+Math.sign(x2-x1)*2.5 +"-5 l "+Math.sign(x2-x1)*5+" 10 l "+Math.sign(x2-x1)*5+" -10 l "+Math.sign(x2-x1)*5+" 10 l "+Math.sign(x2-x1)*5 +" -10 l "+Math.sign(x2-x1)*5+" 10 l "+Math.sign(x2-x1)*2.5+ " -5 l "+Math.sign(x2-x1)*40+ " 0")
+                    .attr("stroke", "black")
+                    .attr("stroke-width", "3")
+                    .attr("stroke-linejoin", "bevel")
+                    .attr("fill", "none")
+      
       .on("click", () => setSelectedLine(lineId));
     }
+    else if(selectedComponent === 'capacitance')
+    {
+      svg.append("path")
+      .attr("id", lineId)
+                    
+                    .attr("d", "M " + x1 +" "+y1 + "l"+ Math.sign(x2-x1)*50+ " 0 l "+Math.sign(x2-x1)*0 +"-10 l "+Math.sign(x2-x1)*0+" 20 m "+Math.sign(x2-x1)*10 +"-10 l 0 -10 l 0 20 l 0 -10 l"+Math.sign(x2-x1)*50+ " 0")
+                    .attr("stroke", "black")
+                    .attr("stroke-width", "3")
+                    .attr("stroke-linejoin", "bevel")
+                    .attr("fill", "none")
+      
+  
+    .on("click", () => setSelectedLine(lineId));
+  }
+
   
 
     return lineId; // Return the line's unique ID
@@ -137,6 +154,8 @@ const CircuitCanvas = () => {
       <div>
         <button onClick={() =>setSelectedComponent('wire')}>Select Wire</button>
         <button onClick={() => setSelectedComponent('resistance')}>Select Resistor</button>
+        <button onClick={() => setSelectedComponent('capacitance')}>Select Capacitor</button>
+        <button onClick={() => setSelectedComponent('inductance')}>Select Inductor</button>
       </div>
     </div>
   );
