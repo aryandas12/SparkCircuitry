@@ -21,6 +21,7 @@ const CircuitCanvas = () => {
   const gap = 100; // Gap between dots
 
   const [selectedComponent, setSelectedComponent] = useState('wire')
+  
 
   const handleDotClick = (dotId) => {
     if (connectedDots.length === 0) {
@@ -58,6 +59,7 @@ const CircuitCanvas = () => {
     const lineId = `line-${dotId1}-${dotId2}`; // Generate a unique line ID
 
     components[selectedComponent].component(svg, lineId, setSelectedLine, x1, x2, y1, y2);
+   
 
     return lineId; // Return the line's unique ID
   };
@@ -68,6 +70,7 @@ const CircuitCanvas = () => {
     svg.select(`#${lineId}`).remove(); // Remove the line from the SVG
     setLines(lines.filter((id) => id !== lineId)); // Remove the line's ID from state
   };
+  
 
   // Calculate the total width and height of the grid
   const totalWidth = numCols * (2 * dotRadius + gap);
@@ -118,14 +121,21 @@ const CircuitCanvas = () => {
           value={selectedComponent}
           onChange={(e) => setSelectedComponent(e.target.value)}
         >
-          <option value="wire">Wire</option>
-          <option value="resistor">Resistor</option>
-          <option value="capacitor">Capacitor</option>
-          <option value="inductor">Inductor</option>
+
+          {Object.keys(components).map(item => (
+            <option value={item} key={item}>{item}</option>
+          ))}
+            
+        
       </select>
       </div>
     </div>
   );
+  
+
+  
 };
+
+
 
 export default CircuitCanvas;
