@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import * as d3 from "d3";
+import { components } from "../assets/componentsLibrary";
 
 const Circle = styled.circle`
   transition: all 100ms;
@@ -56,46 +57,7 @@ const CircuitCanvas = () => {
 
     const lineId = `line-${dotId1}-${dotId2}`; // Generate a unique line ID
 
-    if(selectedComponent === 'wire')
-    {
-      svg
-      .append("line")
-      .attr("id", lineId) // Set the line's ID
-      .attr("x1", x1)
-      .attr("y1", y1)
-      .attr("x2", x2)
-      .attr("y2", y2)
-      .attr("stroke", "grey")
-      .attr("stroke-width", "3")
-      .on("click", () => setSelectedLine(lineId));
-       // Add click event handler to remove the line
-    }
-    else if(selectedComponent === 'resistor')
-    {
-      svg.append("path")
-      .attr("id", lineId)
-      .attr("d", "M " + x1 +" "+y1 + "l"+ Math.sign((x2-x1)?(x2-x1):(y2-y1))*40+ " 0 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*2.5 +"-5 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" 10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" -10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" 10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5 +" -10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*5+" 10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*2.5+ " -5 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*40+ " 0")
-      .attr("stroke", "black")
-      .attr("stroke-width", "3")
-      .attr("stroke-linejoin", "bevel")
-      .attr("fill", "none")
-      .attr("transform", "rotate("+(y2===y1?0:Math.sign(y2<y1?y1-y2:y2-y1))*90+" "+x1+" "+y1+")")
-      .on("click", () => setSelectedLine(lineId));
-    }
-    else if(selectedComponent === 'capacitor')
-    {
-      svg.append("path")
-      .attr("id", lineId)                 
-      .attr("d", "M " + x1 +" "+y1 + "l"+ Math.sign((x2-x1)?(x2-x1):(y2-y1))*50+ " 0 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*0 +"-10 l "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*0+" 20 m "+Math.sign((x2-x1)?(x2-x1):(y2-y1))*10 +"-10 l 0 -10 l 0 20 l 0 -10 l"+Math.sign((x2-x1)?(x2-x1):(y2-y1))*50+ " 0")
-      .attr("stroke", "black")
-      .attr("stroke-width", "3")
-      .attr("stroke-linejoin", "bevel")
-      .attr("fill", "none")
-      .attr("transform", "rotate("+(y2===y1?0:Math.sign(y2<y1?y1-y2:y2-y1))*90+" "+x1+" "+y1+")")
-      .on("click", () => setSelectedLine(lineId));
-  }
-
-  
+    components[selectedComponent].component(svg, lineId, setSelectedLine, x1, x2, y1, y2);
 
     return lineId; // Return the line's unique ID
   };
