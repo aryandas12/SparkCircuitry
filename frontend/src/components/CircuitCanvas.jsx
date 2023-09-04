@@ -44,6 +44,9 @@ const CircuitCanvas = () => {
     }
   };
 
+  const handleLineClick =(lineId)=>{
+    setSelectedLine(lineId);
+  }
 
   const connectDots = (dotId1, dotId2) => {
     // Use D3.js to draw a line between the two dots
@@ -58,7 +61,7 @@ const CircuitCanvas = () => {
 
     const lineId = `line-${dotId1}-${dotId2}`; // Generate a unique line ID
 
-    components[selectedComponent].component(svg, lineId, setSelectedLine, x1, x2, y1, y2);
+    components[selectedComponent].component(svg, lineId, handleLineClick, x1, x2, y1, y2);
    
 
     return lineId; // Return the line's unique ID
