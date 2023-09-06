@@ -9,7 +9,7 @@ const Circle = styled.circle`
     cursor: pointer;
   }
 `;
-
+const tempnetList = [];
 const CircuitCanvas = () => {
   const [connectedDots, setConnectedDots] = useState([]);
   const [lines, setLines] = useState([]); // State variable to track lines 
@@ -18,7 +18,8 @@ const CircuitCanvas = () => {
   const numRows = 5;  
   const numCols = 5;
   const dotRadius = 5;
-  const gap = 100; // Gap between dots
+  const gap = 100;
+   // Gap between dots
 
   const [selectedComponent, setSelectedComponent] = useState('wire')
   
@@ -34,7 +35,9 @@ const CircuitCanvas = () => {
       if (row1 === row2 || col1 === col2) {
         // Second dot clicked in the same row or column, connect the dots
         const lineId = connectDots(connectedDots[0], dotId); // Get the unique line ID
-        setLines([...lines, lineId]); // Add line ID to state
+        setLines([...lines, lineId]);
+         // Add line ID to state
+         
         setConnectedDots([]);
       }
     } else if (connectedDots.length === 1 && connectedDots[0] === dotId) {
@@ -59,11 +62,11 @@ const CircuitCanvas = () => {
     const x2 = +dot2.attr("cx");
     const y2 = +dot2.attr("cy");
 
-    const lineId = `line-${dotId1}-${dotId2}`; // Generate a unique line ID
+    const lineId = `${selectedComponent}-${dotId1}-${dotId2}`; // Generate a unique line ID
 
     components[selectedComponent].component(svg, lineId, handleLineClick, x1, x2, y1, y2);
    
-
+    tempnetList.push(lineId);
     return lineId; // Return the line's unique ID
   };
 
@@ -71,7 +74,9 @@ const CircuitCanvas = () => {
   const removeLine = (lineId) => {
     const svg = d3.select(svgRef.current);
     svg.select(`#${lineId}`).remove(); // Remove the line from the SVG
-    setLines(lines.filter((id) => id !== lineId)); // Remove the line's ID from state
+    setLines(lines.filter((id) => id !== lineId));
+    tempnetList.splice(tempnetList.indexOf(lineId));
+     // Remove the line's ID from state
   };
   
 
@@ -111,6 +116,7 @@ const CircuitCanvas = () => {
           if (lines.length > 0) {
             // Remove the last drawn line when the button is clicked
             // const lastLineId = lines[lines.length - 1];
+            
             removeLine(selectedLine);
             setSelectedLine();
           }
@@ -118,7 +124,17 @@ const CircuitCanvas = () => {
       >
         Remove Line
       </button>
+      <button
+        onClick={() => {
+          console.log("New Netlist:")
+          for(var i=0;i<tempnetList.length;i++)
+          {console.log(tempnetList[i]);}
+        }}
+      >
+        netlist at console
+      </button>
       </div>
+      
       <div>
       <select
           value={selectedComponent}
