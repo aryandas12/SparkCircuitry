@@ -126,7 +126,7 @@ const CircuitCanvas = () => {
         >
 
           {Object.keys(components).map(item => (
-            <option value={item} key={item}>{item.toUpperCase()}</option>
+            <option value={components[item].name} key={item}>{components[item].name.toUpperCase()}</option>
           ))}
             
         
