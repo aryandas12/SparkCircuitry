@@ -3,20 +3,50 @@ import styled from "styled-components";
 import * as d3 from "d3";
 import { components } from "../assets/componentsLibrary";
 
+
+//STYLED COMPONENTS
+const Container = styled.main`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`
+
+const Menu = styled.section`
+  margin-bottom: 20px;
+`
+
+const CircuitBoaard = styled.section`
+
+`
+
+const RemoveComponent = styled.div``
+
+const ComponentList = styled.div``
+
+const Select = styled.select``
+
+const Button = styled.button``
+
 const Circle = styled.circle`
   transition: all 100ms;
   &:hover{
     cursor: pointer;
   }
 `;
+
+
+
 const tempnetList = [];
 const CircuitCanvas = () => {
   const [connectedDots, setConnectedDots] = useState([]);
   const [lines, setLines] = useState([]); // State variable to track lines 
   const [selectedLine, setSelectedLine] = useState() 
   const svgRef = React.createRef();
-  const numRows = 5;  
-  const numCols = 5;
+  const numRows = 6;  
+  const numCols = 10;
   const dotRadius = 5;
   const gap = 100;
    // Gap between dots
@@ -85,70 +115,79 @@ const CircuitCanvas = () => {
   const totalHeight = numRows * (2 * dotRadius + gap);
 
   return (
-    <div>
-      <svg ref={svgRef} width={totalWidth} height={totalHeight}>
-        {/* Render dots in a grid */}
-        {Array.from({ length: numRows }).map((_, row) =>
-          Array.from({ length: numCols }).map((_, col) => (
-            
-            <Circle
-              key={`dot-${row}-${col}`}
-              id={`dot-${row}-${col}`}
-              cx={col * (2 * dotRadius + gap) + dotRadius}
-              cy={row * (2 * dotRadius + gap) + dotRadius}
-              r={dotRadius}
-              fill={connectedDots?.includes(`${row}-${col}`) ? "red" : "lightblue"}
-              onClick={() => handleDotClick(`${row}-${col}`)}
-              onMouseOver={(e)=> e.target.setAttribute("r", dotRadius + 2)}
-              onMouseOut={(e)=> e.target.setAttribute("r", dotRadius)}
-            />
-          ))
-        )}
-       
-      </svg>
+    <Container>
+
+      <Menu>
+
+        <RemoveComponent>
+          <p>{selectedLine || 'No Component selected'}</p>
+          <Button
+            onClick={() => {
+              if (lines.length > 0) {
+                // Remove the last drawn line when the Button is clicked
+                // const lastLineId = lines[lines.length - 1];
+                
+                removeLine(selectedLine);
+                setSelectedLine();
+              }
+            }}
+          >
+            Remove {selectedLine?.split('-')[0] || 'Component'}
+          </Button>
+          <Button
+            onClick={() => {
+              console.log("New Netlist:")
+              for(var i=0;i<tempnetList.length;i++)
+              {console.log(tempnetList[i]);}
+            }}
+          >
+            netlist at console
+          </Button>
+          </RemoveComponent>
+          
+          <ComponentList>
+            <Select
+                value={selectedComponent}
+                onChange={(e) => setSelectedComponent(e.target.value)}
+              >
+
+                {Object.keys(components).map(item => (
+                  <option value={components[item].name} key={item}>{components[item].name.toUpperCase()}</option>
+                ))}
+                  
+              
+            </Select>
+          </ComponentList>
+      </Menu>
+
+      <CircuitBoaard>
+        <svg ref={svgRef} width={totalWidth} height={totalHeight}>
+          {/* Render dots in a grid */}
+          {Array.from({ length: numRows }).map((_, row) =>
+            Array.from({ length: numCols }).map((_, col) => (
+              
+              <Circle
+                key={`dot-${row}-${col}`}
+                id={`dot-${row}-${col}`}
+                cx={col * (2 * dotRadius + gap) + dotRadius}
+                cy={row * (2 * dotRadius + gap) + dotRadius}
+                r={dotRadius}
+                fill={connectedDots?.includes(`${row}-${col}`) ? "red" : "lightblue"}
+                onClick={() => handleDotClick(`${row}-${col}`)}
+                onMouseOver={(e)=> e.target.setAttribute("r", dotRadius + 2)}
+                onMouseOut={(e)=> e.target.setAttribute("r", dotRadius)}
+              />
+            ))
+          )}
+        
+        </svg>
+
+      </CircuitBoaard>
 
       {/* Button to remove lines */}
 
-      <div>
-        <p>{selectedLine || 'no line selected'}</p>
-      <button
-        onClick={() => {
-          if (lines.length > 0) {
-            // Remove the last drawn line when the button is clicked
-            // const lastLineId = lines[lines.length - 1];
-            
-            removeLine(selectedLine);
-            setSelectedLine();
-          }
-        }}
-      >
-        Remove Line
-      </button>
-      <button
-        onClick={() => {
-          console.log("New Netlist:")
-          for(var i=0;i<tempnetList.length;i++)
-          {console.log(tempnetList[i]);}
-        }}
-      >
-        netlist at console
-      </button>
-      </div>
       
-      <div>
-      <select
-          value={selectedComponent}
-          onChange={(e) => setSelectedComponent(e.target.value)}
-        >
-
-          {Object.keys(components).map(item => (
-            <option value={components[item].name} key={item}>{components[item].name.toUpperCase()}</option>
-          ))}
-            
-        
-      </select>
-      </div>
-    </div>
+    </Container>
   );
   
 
