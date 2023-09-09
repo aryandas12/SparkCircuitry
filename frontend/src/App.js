@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import CircuitCanvas from "./components/CircuitCanvas";
+import {ContextProvider} from "./contextApi/MyContext"
 
 const Container = styled.div`
   height: 100vh;
@@ -14,18 +15,20 @@ const Container = styled.div`
 
 `
 
-const Title = styled.h1`
-  font-size: 96px;
-  font-family: 'Roboto', sans-serif;
-`
+// const Title = styled.h1`
+//   font-size: 96px;
+//   font-family: 'Roboto', sans-serif;
+// `
 
 
 function App() {
   return (
-    <Container>
-      {/* <Title>SPARKCIRCUITRY</Title> */}
-      <CircuitCanvas/>
-    </Container>
+    <ContextProvider> 
+      <Container>
+        {/* <Title>SPARKCIRCUITRY</Title> */}
+        <CircuitCanvas/>
+      </Container>
+    </ContextProvider>
   );
 }
 

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import * as d3 from "d3";
 import { components } from "../assets/componentsLibrary";
-
+import { useMyContext } from "../contextApi/MyContext";
 
 //STYLED COMPONENTS
 const Container = styled.main`
@@ -12,50 +12,53 @@ const Container = styled.main`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-`
+`;
 
 const Menu = styled.section`
   margin-bottom: 20px;
-`
+`;
 
-const CircuitBoaard = styled.section`
+const CircuitBoaard = styled.section``;
 
-`
+const RemoveComponent = styled.div``;
 
-const RemoveComponent = styled.div``
+const ComponentList = styled.div``;
 
-const ComponentList = styled.div``
+const Select = styled.select``;
 
-const Select = styled.select``
-
-const Button = styled.button``
+const Button = styled.button``;
 
 const Circle = styled.circle`
   transition: all 100ms;
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 `;
 
-
-
 const tempnetList = [];
 const CircuitCanvas = () => {
-  const [connectedDots, setConnectedDots] = useState([]);
-  const [lines, setLines] = useState([]); // State variable to track lines 
-  const [selectedLine, setSelectedLine] = useState() 
+  const {
+    connectedDots,
+    setConnectedDots,
+    lines,
+    setLines,
+    selectedLine,
+    setSelectedLine,
+    selectedComponent,
+    setSelectedComponent,
+    runSim,
+    setRunSim,
+    selectedNodes,
+    setSelectedNodes
+  } = useMyContext();
   const svgRef = React.createRef();
-  const numRows = 6;  
+  const numRows = 6;
   const numCols = 10;
   const dotRadius = 5;
-  const gap = 100;
-   // Gap between dots
-
-  const [selectedComponent, setSelectedComponent] = useState('wire')
-  
+  const gap = 100; // Gap between dots
 
   const handleDotClick = (dotId) => {
-    if (connectedDots.length === 0) {
+    if (connectedDots?.length === 0) {
       // First dot clicked, store its ID
       setConnectedDots([dotId]);
     } else if (connectedDots.length === 1 && connectedDots[0] !== dotId) {
@@ -66,8 +69,8 @@ const CircuitCanvas = () => {
         // Second dot clicked in the same row or column, connect the dots
         const lineId = connectDots(connectedDots[0], dotId); // Get the unique line ID
         setLines([...lines, lineId]);
-         // Add line ID to state
-         
+        // Add line ID to state
+
         setConnectedDots([]);
       }
     } else if (connectedDots.length === 1 && connectedDots[0] === dotId) {
@@ -77,9 +80,9 @@ const CircuitCanvas = () => {
     }
   };
 
-  const handleLineClick =(lineId)=>{
+  const handleLineClick = (lineId) => {
     setSelectedLine(lineId);
-  }
+  };
 
   const connectDots = (dotId1, dotId2) => {
     // Use D3.js to draw a line between the two dots
@@ -92,11 +95,21 @@ const CircuitCanvas = () => {
     const x2 = +dot2.attr("cx");
     const y2 = +dot2.attr("cy");
 
-    const lineId = `${selectedComponent}-${dotId1}-${dotId2}`; // Generate a unique line ID
+    const lineId = `${selectedComponent}_${dotId1}_${dotId2}`; // Generate a unique line ID
 
-    components[selectedComponent].component(svg, lineId, handleLineClick, x1, x2, y1, y2);
-   
+    components[selectedComponent].component(
+      svg,
+      lineId,
+      handleLineClick,
+      x1,
+      x2,
+      y1,
+      y2
+    );
+
     tempnetList.push(lineId);
+
+    setSelectedNodes((selectedNodes)=>[...selectedNodes, dotId1, dotId2])
     return lineId; // Return the line's unique ID
   };
 
@@ -105,10 +118,19 @@ const CircuitCanvas = () => {
     const svg = d3.select(svgRef.current);
     svg.select(`#${lineId}`).remove(); // Remove the line from the SVG
     setLines(lines.filter((id) => id !== lineId));
-    tempnetList.splice(tempnetList.indexOf(lineId));
-     // Remove the line's ID from state
+    tempnetList.splice(tempnetList.indexOf(lineId),1);
+
+    const dot1 = lineId.split("_")[1];
+    const dot2 = lineId.split("_")[2];
+
+    console.log(dot1, dot2)
+
+
+    setSelectedNodes((selectedNodes)=>(
+      selectedNodes?.splice(dot1,1)
+    ))
+    // Remove the line's ID from state
   };
-  
 
   // Calculate the total width and height of the grid
   const totalWidth = numCols * (2 * dotRadius + gap);
@@ -116,48 +138,50 @@ const CircuitCanvas = () => {
 
   return (
     <Container>
-
       <Menu>
-
         <RemoveComponent>
-          <p>{selectedLine || 'No Component selected'}</p>
+          <p>{selectedLine || "No Component selected"}</p>
           <Button
             onClick={() => {
               if (lines.length > 0) {
                 // Remove the last drawn line when the Button is clicked
                 // const lastLineId = lines[lines.length - 1];
-                
-                removeLine(selectedLine);
+
+                selectedLine && removeLine(selectedLine);
                 setSelectedLine();
               }
             }}
           >
-            Remove {selectedLine?.split('-')[0] || 'Component'}
+            Remove {selectedLine?.split("-")[0] || "Component"}
           </Button>
           <Button
             onClick={() => {
-              console.log("New Netlist:")
-              for(var i=0;i<tempnetList.length;i++)
-              {console.log(tempnetList[i]);}
+              console.log("New Netlist:");
+              for (let i = 0; i < tempnetList.length; i++) {
+                console.log(tempnetList[i]);
+              }
             }}
           >
             netlist at console
           </Button>
-          </RemoveComponent>
-          
-          <ComponentList>
-            <Select
-                value={selectedComponent}
-                onChange={(e) => setSelectedComponent(e.target.value)}
-              >
 
-                {Object.keys(components).map(item => (
-                  <option value={components[item].name} key={item}>{components[item].name.toUpperCase()}</option>
-                ))}
-                  
-              
-            </Select>
-          </ComponentList>
+          <Button onClick={()=> setRunSim(!runSim)} >
+            Run Simulation
+          </Button>
+        </RemoveComponent>
+
+        <ComponentList>
+          <Select
+            value={selectedComponent || ""}
+            onChange={(e) => setSelectedComponent(e.target.value)}
+          >
+            {Object.keys(components).map((item) => (
+              <option value={components[item].name} key={item}>
+                {components[item].name.toUpperCase()}
+              </option>
+            ))}
+          </Select>
+        </ComponentList>
       </Menu>
 
       <CircuitBoaard>
@@ -165,35 +189,27 @@ const CircuitCanvas = () => {
           {/* Render dots in a grid */}
           {Array.from({ length: numRows }).map((_, row) =>
             Array.from({ length: numCols }).map((_, col) => (
-              
               <Circle
                 key={`dot-${row}-${col}`}
                 id={`dot-${row}-${col}`}
                 cx={col * (2 * dotRadius + gap) + dotRadius}
                 cy={row * (2 * dotRadius + gap) + dotRadius}
                 r={dotRadius}
-                fill={connectedDots?.includes(`${row}-${col}`) ? "red" : "lightblue"}
+                fill={
+                  connectedDots?.includes(`${row}-${col}`) ? "red" : "lightblue"
+                }
                 onClick={() => handleDotClick(`${row}-${col}`)}
-                onMouseOver={(e)=> e.target.setAttribute("r", dotRadius + 2)}
-                onMouseOut={(e)=> e.target.setAttribute("r", dotRadius)}
+                onMouseOver={(e) => e.target.setAttribute("r", dotRadius + 2)}
+                onMouseOut={(e) => e.target.setAttribute("r", dotRadius)}
               />
             ))
           )}
-        
         </svg>
-
       </CircuitBoaard>
 
       {/* Button to remove lines */}
-
-      
     </Container>
   );
-  
-
-  
 };
-
-
 
 export default CircuitCanvas;
