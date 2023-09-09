@@ -65,7 +65,7 @@ const CircuitCanvas = () => {
       const [row1, col1] = connectedDots[0].split("-");
       const [row2, col2] = dotId.split("-");
 
-      if (row1 === row2 || col1 === col2) {
+      if(row1 === row2 || col1 === col2) {
         // Second dot clicked in the same row or column, connect the dots
         const lineId = connectDots(connectedDots[0], dotId); // Get the unique line ID
         setLines([...lines, lineId]);
@@ -107,7 +107,6 @@ const CircuitCanvas = () => {
       y2
     );
 
-    tempnetList.push(lineId);
 
     setSelectedNodes((selectedNodes)=>[...selectedNodes, dotId1, dotId2])
     return lineId; // Return the line's unique ID
