@@ -49,7 +49,7 @@ const CircuitCanvas = () => {
     runSim,
     setRunSim,
     selectedNodes,
-    setSelectedNodes
+    setSelectedNodes,
   } = useMyContext();
   const svgRef = React.createRef();
   const numRows = 6;
@@ -65,7 +65,7 @@ const CircuitCanvas = () => {
       const [row1, col1] = connectedDots[0].split("-");
       const [row2, col2] = dotId.split("-");
 
-      if(row1 === row2 || col1 === col2) {
+      if (row1 === row2 || col1 === col2) {
         // Second dot clicked in the same row or column, connect the dots
         const lineId = connectDots(connectedDots[0], dotId); // Get the unique line ID
         setLines([...lines, lineId]);
@@ -107,8 +107,17 @@ const CircuitCanvas = () => {
       y2
     );
 
+    const dot1Value = selectedNodes.has(dotId1) ? selectedNodes.get(dotId1) : 0;
+    const dot2Value = selectedNodes.has(dotId2) ? selectedNodes.get(dotId2) : 0;
 
-    setSelectedNodes((selectedNodes)=>[...selectedNodes, dotId1, dotId2])
+    const newMap = new Map(selectedNodes);
+    newMap.set(dotId1, dot1Value + 1);
+    newMap.set(dotId2, dot2Value + 1);
+
+    setSelectedNodes(newMap);
+    
+    // handleUpdateNodes();
+
     return lineId; // Return the line's unique ID
   };
 
@@ -117,23 +126,30 @@ const CircuitCanvas = () => {
     const svg = d3.select(svgRef.current);
     svg.select(`#${lineId}`).remove(); // Remove the line from the SVG
     setLines(lines.filter((id) => id !== lineId));
-    tempnetList.splice(tempnetList.indexOf(lineId),1);
 
-    const dot1 = lineId.split("_")[1];
-    const dot2 = lineId.split("_")[2];
+    const dotId1 = lineId.split("_")[1];
+    const dotId2 = lineId.split("_")[2];
 
-    console.log(dot1, dot2)
+    console.log(dotId1, dotId2);
 
+    const dot1 = selectedNodes.get(dotId1);
+    const dot2 = selectedNodes.get(dotId2);
 
-    setSelectedNodes((selectedNodes)=>(
-      selectedNodes?.splice(dot1,1)
-    ))
+    const newMap = new Map(selectedNodes);
+
+    
+    dot1 > 1 ? newMap.set(dotId1, dot1 - 1) : newMap.delete(dotId1);
+    dot2 > 1 ? newMap.set(dotId2, dot2 - 1) : newMap.delete(dotId2);
+
+    setSelectedNodes(newMap);
     // Remove the line's ID from state
   };
 
   // Calculate the total width and height of the grid
   const totalWidth = numCols * (2 * dotRadius + gap);
   const totalHeight = numRows * (2 * dotRadius + gap);
+
+
 
   return (
     <Container>
@@ -143,9 +159,6 @@ const CircuitCanvas = () => {
           <Button
             onClick={() => {
               if (lines.length > 0) {
-                // Remove the last drawn line when the Button is clicked
-                // const lastLineId = lines[lines.length - 1];
-
                 selectedLine && removeLine(selectedLine);
                 setSelectedLine();
               }
@@ -164,9 +177,7 @@ const CircuitCanvas = () => {
             netlist at console
           </Button>
 
-          <Button onClick={()=> setRunSim(!runSim)} >
-            Run Simulation
-          </Button>
+          <Button onClick={() => setRunSim(!runSim)}>Run Simulation</Button>
         </RemoveComponent>
 
         <ComponentList>

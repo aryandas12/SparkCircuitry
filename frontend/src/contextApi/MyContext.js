@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState} from "react";
-import * as d3 from 'd3'
+// import * as d3 from 'd3'
 
 const MyContext = createContext();
 
@@ -9,28 +9,35 @@ export const ContextProvider = ({ children }) => {
   const [selectedLine, setSelectedLine] = useState();
   const [selectedComponent, setSelectedComponent] = useState('wire')
 
-  const [selectedNodes, setSelectedNodes] = useState([]); // to select nodes that are part of the schematics
+  const [selectedNodes, setSelectedNodes] = useState(new Map()); // to select nodes that are part of the schematics
 
-  const [updatedNodes, setUpdatedNodes] = useState({})
+  // console.log(selectedNodes)
+
+  const [updatedNodes, setUpdatedNodes] = useState(new Map())
  
 
   const [runSim, setRunSim] = useState(false);
 
+  
+
   useEffect(()=>{
-
-    const unique = [...new Set(selectedNodes)]
-    const map = {}
-    if(runSim)
-    {
-      unique.forEach((value, index)=>{
-        map[value] = index
-      })
-
-      setUpdatedNodes(map);
-      console.log(updatedNodes);
+    const handleUpdateNodes = ()=>{
+      const newMap = new Map()
+      let i = 0;
+      for(const [key] of selectedNodes)
+      {
+        newMap.set(key, i);
+        i++;
+      }
+  
+      setUpdatedNodes(newMap);
     }
+    return handleUpdateNodes();
+  }, [selectedNodes])
 
-  }, [runSim])
+  console.log(updatedNodes)
+
+ 
 
 
   const [circuit, setCircuit] = useState([
@@ -62,7 +69,7 @@ export const ContextProvider = ({ children }) => {
         runSim, 
         setRunSim,
         updatedNodes, 
-        setUpdatedNodes
+        setUpdatedNodes,
       }}
     >
       {children}
