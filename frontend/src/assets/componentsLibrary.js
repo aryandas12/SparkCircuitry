@@ -74,7 +74,7 @@ export const components = {
                         .attr("stroke-width", "3")
                         .attr("stroke-linejoin", "bevel")
                         .attr("fill", "none")
-                        .attr("transform", "rotate("+(y2==y1?0:Math.sign(y2<y1?y1-y2:y2-y1))*90+" "+x1+" "+y1+")")
+                        .attr("transform", "rotate("+(y2===y1?0:Math.sign(y2<y1?y1-y2:y2-y1))*90+" "+x1+" "+y1+")")
                         .on("click", () => setSelectedLine(lineId))
         )
     },

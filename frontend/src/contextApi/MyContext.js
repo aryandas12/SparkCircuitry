@@ -46,10 +46,15 @@ export const ContextProvider = ({ children }) => {
       component: '',
       label: '',
       value: '',
+      
       st_node: '',
       end_node: ''
     }
   ])
+
+  useEffect(()=>{
+
+  }, [runSim])
 
   return (
     <MyContext.Provider
