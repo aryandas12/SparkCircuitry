@@ -178,6 +178,7 @@ const CircuitCanvas = () => {
           </Button>
 
           <Button onClick={() => setRunSim(!runSim)}>Run Simulation</Button>
+          
         </RemoveComponent>
 
         <ComponentList>

@@ -18,9 +18,9 @@ export const components = {
             .on("click", () => setSelectedLine(lineId))
         )
     },
-    resistor:{
+    R:{
         id: 2,
-        name: 'resistor',
+        name: 'R',
         component: (svg, lineId, setSelectedLine, x1, x2, y1, y2) => (
             svg.append("path")
             .attr("id", lineId)
@@ -33,9 +33,9 @@ export const components = {
             .on("click", () => setSelectedLine(lineId))
         )
     },
-    capacitor:{
+    C:{
         id: 3,
-        name: 'capacitor',
+        name: 'C',
         component: (svg, lineId, setSelectedLine, x1, x2, y1, y2) => (
             svg.append("path")
             .attr("id", lineId)                 
@@ -48,9 +48,9 @@ export const components = {
             .on("click", () => setSelectedLine(lineId))
         )
     },
-    inductor: {
+    L: {
         id: 4,
-        name: 'inductor',
+        name: 'L',
         component: (svg, lineId, setSelectedLine, x1, x2, y1, y2) => (
             svg.append("path")
             .attr("id", lineId)
@@ -63,9 +63,9 @@ export const components = {
             .on("click", () => setSelectedLine(lineId))
         )
     },
-    DCsource: {
+    V: {
         id: 5,
-        name: 'DCsource',
+        name: 'V',
         component: (svg, lineId, setSelectedLine, x1, x2, y1, y2) => (
                     svg.append("path")
                         .attr("id", lineId)
