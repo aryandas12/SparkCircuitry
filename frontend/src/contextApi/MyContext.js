@@ -25,14 +25,14 @@ export const ContextProvider = ({ children }) => {
       let netList = ""
 
       lines.forEach(line=>{
-        netList += (line + " " + updatedNodes.get(line.split('_')[1]) + " " + updatedNodes.get(line.split('_')[2]) + "\n" )
+        netList += (line + " " + updatedNodes.get(line.split('_')[1]) + " " + updatedNodes.get(line.split('_')[2]) + " 2 " + "\n" )
       })
 
       return netList
     }
 
     if(runSim){
-      console.log(convertToNetlist())
+       //CALL API HERE
     }
   },[runSim, lines, updatedNodes])
 
